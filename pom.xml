@@ -112,6 +112,7 @@
     <src.dir>src/main/java</src.dir>
     <test.additional.args />
 
+    <!-- SonarCloud -->
     <sonar.organization>0xmenna01</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
