@@ -17,10 +17,8 @@
  */
 package org.apache.bookkeeper.tls;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import org.apache.bookkeeper.auth.BookieAuthProvider;
 import org.apache.bookkeeper.common.util.ReflectionUtils;
 import org.apache.bookkeeper.conf.ServerConfiguration;
@@ -31,8 +29,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 
 /**
@@ -54,7 +52,7 @@ public class TestDummyBookieAuthZFactory {
         bookieAuthZFactory = (BookieAuthZFactory) ReflectionUtils.newInstance(factoryClassName,
             BookieAuthProvider.Factory.class);
 
-        when(mockedServerConfig.getAuthorizedRoles()).thenReturn(new String[] {"role1"});
+        when(mockedServerConfig.getAuthorizedRoles()).thenReturn(new String[]{"role1"});
     }
 
     @Test
