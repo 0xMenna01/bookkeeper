@@ -43,7 +43,7 @@ public class TestDummyBookieAuthZFactory {
     private BookieAuthZFactory bookieAuthZFactory;
 
     @Mock
-    private ServerConfiguration mockedServerConfig = new ServerConfiguration();
+    private ServerConfiguration mockedServerConfig;
 
     @Before
     public void setup() {
