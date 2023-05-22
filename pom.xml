@@ -117,12 +117,17 @@
         <src.dir>src/main/java</src.dir>
         <test.additional.args/>
 
-        <!-- SonarCloud -->
+        <rootpom.basedir>${basedir}</rootpom.basedir>
+        <maven.multiModuleProjectDirectory>${rootpom.basedir}</maven.multiModuleProjectDirectory>
+
+        <!-- SonarCloud and JaCoCo-->
+        <sonar.language>java</sonar.language>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.organization>0xmenna01</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
-        <!-- JaCoCo -->
-        <sonar.coverage.jacoco.xmlReportPaths>../tests/target/site/jacoco-aggregate/jacoco.xml
+        <sonar.internal.analysis.dbd>false</sonar.internal.analysis.dbd>
+        <sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${rootpom.basedir}/tests/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- dependencies -->

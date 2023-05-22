@@ -37,7 +37,7 @@ import java.io.IOException;
  * Unit Tests for BookieAuthZFactory.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class TestDummyBookieAuthZFactory {
+public class DummyBookieAuthZFactoryTest {
 
     @InjectMocks
     private BookieAuthZFactory bookieAuthZFactory;
