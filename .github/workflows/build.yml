@@ -35,6 +35,7 @@ jobs:
         run: |
           git clone https://github.com/saeg/ba-dua.git
           cd ba-dua
+          git checkout d2401f0
           mvn clean install
           cd ..
       - name: Build and analyze

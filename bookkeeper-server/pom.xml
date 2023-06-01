@@ -264,15 +264,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <!--        <configuration>-->
-                <!--          <trimStackTrace>false</trimStackTrace>-->
-                <!--          <properties>-->
-                <!--            <property>-->
-                <!--              <name>listener</name>-->
-                <!--              <value>org.apache.bookkeeper.common.testing.util.TimedOutTestsListener</value>-->
-                <!--            </property>-->
-                <!--          </properties>-->
-                <!--        </configuration>-->
+                <configuration>
+                  <useSystemClassLoader>false</useSystemClassLoader>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -365,7 +359,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <ba-dua.version>0.8.1-SNAPSHOT</ba-dua.version>
+                <ba-dua.version>0.6.0</ba-dua.version>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <maven.compiler.source>${java.specification.version}</maven.compiler.source>
                 <maven.compiler.target>${java.specification.version}</maven.compiler.target>
