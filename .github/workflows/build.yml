@@ -30,8 +30,15 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: BaDua Configuration
+        run: |
+          git clone https://github.com/saeg/ba-dua.git
+          cd ba-dua
+          mvn clean install
+          cd ..
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B -P JaCoCo-coverage verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=0xMenna01_bookkeeper
+        run: mvn -B -P JaCoCoCoverage -P BaDuaCoverage verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=0xMenna01_bookkeeper

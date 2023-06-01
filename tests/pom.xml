@@ -15,7 +15,6 @@
         <maven.compiler.target>17</maven.compiler.target>
         <rootpom.basedir>${basedir}/..</rootpom.basedir>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
