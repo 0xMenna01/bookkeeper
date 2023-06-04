@@ -1,8 +1,9 @@
-package org.apache.bookkeeper.utils;
+package org.apache.bookkeeper.tls.utils.enums;
+
 
 public enum ConfigType {
-    VALID_SINGLE_ROLE("role1, role2"),
-    VALID_MULTIPLE_ROLES("dummyRole"),
+    VALID_SINGLE_ROLE("dummyRole"),
+    VALID_MULTIPLE_ROLES("role1, role2"),
     EMPTY(""),
     INVALID(","),
     NULL(null);
@@ -24,4 +25,5 @@ public enum ConfigType {
         sb.append(roles);
         return sb.toString();
     }
+
 }

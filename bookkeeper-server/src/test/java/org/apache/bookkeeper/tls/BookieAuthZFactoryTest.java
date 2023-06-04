@@ -20,14 +20,13 @@ package org.apache.bookkeeper.tls;
 import org.apache.bookkeeper.auth.BookieAuthProvider;
 import org.apache.bookkeeper.common.util.ReflectionUtils;
 import org.apache.bookkeeper.conf.ServerConfiguration;
-import org.apache.bookkeeper.utils.ConfigType;
+import org.apache.bookkeeper.tls.utils.enums.ConfigType;
+import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -62,14 +61,7 @@ public class BookieAuthZFactoryTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
-        return Arrays.asList(new Object[][] {
-            //CONFIG               EXCEPTION
-            { ConfigType.VALID_SINGLE_ROLE,     false},
-            { ConfigType.VALID_MULTIPLE_ROLES,     false},
-            { ConfigType.EMPTY,     true},
-            { ConfigType.INVALID,     true},
-            { ConfigType.NULL,     true},
-        });
+        return TestUtils.buildAuthConfigParameters();
     }
 
     @Test
