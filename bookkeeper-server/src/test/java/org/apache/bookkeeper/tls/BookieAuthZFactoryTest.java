@@ -20,6 +20,7 @@ package org.apache.bookkeeper.tls;
 import org.apache.bookkeeper.auth.BookieAuthProvider;
 import org.apache.bookkeeper.common.util.ReflectionUtils;
 import org.apache.bookkeeper.conf.ServerConfiguration;
+import org.apache.bookkeeper.utils.ConfigType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,35 +48,24 @@ public class BookieAuthZFactoryTest {
         factory = ReflectionUtils.newInstance(factoryClassName, BookieAuthProvider.Factory.class);
 
         this.authConfig = authConfig;
-        conf = getServerConfig();
+
+        conf = null;
+        if (authConfig.getRoles() != null)
+            conf = buildConfig(authConfig.getRoles());
 
         this.isExpectedException = isExpectedException;
     }
 
-    private ServerConfiguration getServerConfig() {
-
-        switch (authConfig) {
-            case VALID:
-                return new ServerConfiguration().setAuthorizedRoles("dummyRole");
-            case EMPTY:
-                return new ServerConfiguration().setAuthorizedRoles("");
-
-            case INVALID:
-                return new ServerConfiguration().setAuthorizedRoles(",");
-
-            case NULL:
-                return null;
-
-            default:
-                throw new RuntimeException();
-        }
+    private ServerConfiguration buildConfig(String roles) {
+        return new ServerConfiguration().setAuthorizedRoles(roles);
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
             //CONFIG               EXCEPTION
-            { ConfigType.VALID,     false},
+            { ConfigType.VALID_SINGLE_ROLE,     false},
+            { ConfigType.VALID_MULTIPLE_ROLES,     false},
             { ConfigType.EMPTY,     true},
             { ConfigType.INVALID,     true},
             { ConfigType.NULL,     true},
@@ -84,11 +74,14 @@ public class BookieAuthZFactoryTest {
 
     @Test
     public void testInitConfig() {
+
         try {
             factory.init(conf);
-            Assert.assertFalse("An exception was expected", this.isExpectedException);
+            Assert.assertFalse("An exception was expected, " +
+                authConfig.toString(), this.isExpectedException);
         } catch (Exception e) {
-            Assert.assertTrue("No exception was expected, but " + e.getClass().getName() + " has been thrown.",
+            Assert.assertTrue("No exception was expected, " +
+                    authConfig.toString() + ", but " + e.getClass().getName() + " has been thrown",
                 this.isExpectedException);
         }
     }
@@ -96,13 +89,5 @@ public class BookieAuthZFactoryTest {
 
 
 
-    private enum ConfigType {
-        VALID,
-        EMPTY,
-        INVALID,
-        NULL
-    }
-
 
 }
-
