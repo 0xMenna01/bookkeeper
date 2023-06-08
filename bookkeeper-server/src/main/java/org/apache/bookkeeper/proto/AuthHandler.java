@@ -214,6 +214,7 @@ class AuthHandler {
             }
         }
 
+
         class AuthHandshakeCompleteCallback implements AuthCallbacks.GenericCallback<Void> {
             @Override
             public void operationComplete(int rc, Void v) {

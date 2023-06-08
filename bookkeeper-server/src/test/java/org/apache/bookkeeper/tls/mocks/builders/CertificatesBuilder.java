@@ -1,12 +1,13 @@
-package org.apache.bookkeeper.tls.mocks;
+package org.apache.bookkeeper.tls.mocks.builders;
 
+import org.apache.bookkeeper.tls.mocks.CertMeta;
+import org.apache.bookkeeper.tls.mocks.CertificatesMock;
+import org.apache.bookkeeper.tls.mocks.MockException;
 import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.apache.bookkeeper.tls.utils.enums.ConfigType;
-import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
 
-public class CertificatesBuilder implements MockBuilder<CertificatesMock>{
+public class CertificatesBuilder extends GenericMockBuilder<CertificatesMock> {
 
-   private GenericInstance instanceType;
    private static CertificatesBuilder instance = null;
 
     private CertificatesBuilder(){}
@@ -18,17 +19,13 @@ public class CertificatesBuilder implements MockBuilder<CertificatesMock>{
         return instance;
     }
 
-    @Override
-    public void setup(GenericInstance instanceType) {
-        this.instanceType = instanceType;
-    }
 
     @Override
     public CertificatesMock build() throws MockException {
         CertMeta certMeta = new CertMeta();
         String[] certRole = null;
 
-        switch (instanceType) {
+        switch (this.instanceType) {
             case VALID:
                 certRole = TestUtils.buildCertRole(ConfigType.VALID_SINGLE_ROLE);
                 break;
@@ -37,9 +34,8 @@ public class CertificatesBuilder implements MockBuilder<CertificatesMock>{
                 break;
             case NULL:
                 break;
-
         }
-        certMeta.setMeta(instanceType, certRole);
+        certMeta.setMeta(this.instanceType, certRole);
 
         return new CertificatesMock(certMeta);
     }

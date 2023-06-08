@@ -24,7 +24,6 @@ public class CertificatesMock implements MockBehaviour {
         this.certMeta = certMeta;
     }
 
-
     @Override
     public void mock() throws MockException {
 
@@ -54,6 +53,13 @@ public class CertificatesMock implements MockBehaviour {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public Collection<Object> getMockCertificates() {
+        return mockCertificates;
+    }
+
+    public CertUtils getMockCertUtils() {
+        return mockCertUtils;
     }
 }
