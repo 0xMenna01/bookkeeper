@@ -18,7 +18,6 @@ public class ConnectionPeerMock implements MockBehaviour{
 
     public ConnectionPeerMock(GenericInstance instance) {
         this.instance = instance;
-        CertificatesBuilder.getInstance().setup(this.instance);
     }
 
     /// The connection peer *INVALID* instance is mocked through the incorrect certificate roles
@@ -26,8 +25,12 @@ public class ConnectionPeerMock implements MockBehaviour{
 
     /// By definition a secure connection *MUST* have valid certification roles.
     @Override
-    public void mock() throws MockException {
-        certificatesMock = CertificatesBuilder.getInstance().build();
+    public ConnectionPeerMock mock() throws MockException {
+        CertificatesBuilder.getInstance().setup(instance);
+
+        certificatesMock = CertificatesBuilder.getInstance()
+            .build()
+            .mock();
 
         if (instance.equals(GenericInstance.NULL))
             connectionPeerMock = null;
@@ -38,6 +41,8 @@ public class ConnectionPeerMock implements MockBehaviour{
             // This changes the behaviour between *VALID* and *INVALID* instances
             Mockito.when(connectionPeerMock.getProtocolPrincipals()).thenReturn(certificatesMock.getMockCertificates());
         }
+
+        return this;
     }
 
     private void mockValidConnectionSocket() {

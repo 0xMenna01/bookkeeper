@@ -22,9 +22,12 @@ import org.apache.bookkeeper.auth.BookieAuthProvider;
 import org.apache.bookkeeper.common.util.ReflectionUtils;
 import org.apache.bookkeeper.conf.ServerConfiguration;
 import org.apache.bookkeeper.proto.BookieConnectionPeer;
+import org.apache.bookkeeper.tls.mocks.CallBackMock;
 import org.apache.bookkeeper.tls.mocks.ConnectionPeerMock;
 import org.apache.bookkeeper.tls.mocks.MockException;
+import org.apache.bookkeeper.tls.mocks.builders.CallbackMockBuilder;
 import org.apache.bookkeeper.tls.mocks.builders.ConnectionPeerMockBuilder;
+import org.apache.bookkeeper.tls.utils.AuthZFactoryConfig;
 import org.apache.bookkeeper.tls.utils.enums.ConfigType;
 import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
@@ -34,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 
 import java.util.Collection;
 
@@ -44,22 +48,23 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class BookieAuthZFactoryTest {
 
-    private ConfigType authConfig;
+    AuthZFactoryConfig authConfig;
     private ServerConfiguration conf;
     private BookieConnectionPeer connectionPeerMock;
     private AuthCallbacks.GenericCallback<Void> completeCb;
-    private boolean isExpectedException;
-    private CertUtils certUtilsMock;
+    private TestUtils.ExceptionExpected isExpectedException;
+
     @InjectMocks
     private BookieAuthProvider.Factory factory;
 
 
-    public BookieAuthZFactoryTest(ConfigType authConfig, GenericInstance connectionPeerType, GenericInstance authCallbackType, boolean isExpectedException) throws MockException {
+    public BookieAuthZFactoryTest(ConfigType authConfig, GenericInstance connectionPeerType, GenericInstance authCallbackType, TestUtils.ExceptionExpected isExpectedException) throws MockException {
+
+        this.authConfig = new AuthZFactoryConfig(authConfig, connectionPeerType, authCallbackType);
+
         // 1. Initialize factory
         String factoryClassName = BookieAuthZFactory.class.getName();
         factory = ReflectionUtils.newInstance(factoryClassName, BookieAuthProvider.Factory.class);
-
-        this.authConfig = authConfig;
 
         conf = null;
         if (authConfig.getRoles() != null)
@@ -70,25 +75,24 @@ public class BookieAuthZFactoryTest {
         ConnectionPeerMockBuilder.getInstance()
             .setup(connectionPeerType);
 
-        ConnectionPeerMock connectionPeerMock = ConnectionPeerMockBuilder.getInstance()
-            .build();
 
-        this.connectionPeerMock = connectionPeerMock.getConnectionPeerMock();
-        this.certUtilsMock = connectionPeerMock.getCertificatesMock().getMockCertUtils();
+        this.connectionPeerMock = ConnectionPeerMockBuilder.getInstance()
+            .build()
+            .mock()
+            .getConnectionPeerMock();
 
 
         // 3. Construct the authentication callback
-        if (authCallbackType.equals(GenericInstance.VALID)){
-            // TODO -> mock a valid instance
-        } else completeCb = null;
+        CallbackMockBuilder.getInstance()
+            .setup(authCallbackType);
+
+        this.completeCb = CallbackMockBuilder.getInstance()
+            .build()
+            .mock()
+            .getCbMock();
 
         // 4. Set weather an exception is expected
         this.isExpectedException = isExpectedException;
-    }
-
-
-    private ServerConfiguration buildConfig(String roles) {
-        return new ServerConfiguration().setAuthorizedRoles(roles);
     }
 
     @Parameterized.Parameters
@@ -96,17 +100,37 @@ public class BookieAuthZFactoryTest {
         return TestUtils.buildAuthConfigParameters();
     }
 
+
+    private ServerConfiguration buildConfig(String roles) {
+        return new ServerConfiguration().setAuthorizedRoles(roles);
+    }
+
+
     @Test
     public void testProviderInit() {
-
         try {
             factory.init(conf);
-            Assert.assertFalse("An exception was expected, " +
-                authConfig.toString(), this.isExpectedException);
+            Assert.assertFalse("An exception was expected because of wrong input configuration.\n" +
+                authConfig.toString(), this.isExpectedException.configException());
+
+            BookieAuthProvider provider = factory.newProvider(connectionPeerMock, completeCb);
+            provider.onProtocolUpgrade();
+            Assert.assertFalse("An exception was expected due to a null \n" +
+                authConfig.toString(), this.isExpectedException.providerException());
+
+            if (!connectionPeerMock.getProtocolPrincipals().isEmpty()){
+                if (authConfig.getAuthConfig().equals(ConfigType.VALID_SINGLE_ROLE)){
+                    Assert.assertNotEquals("The peer connection must have an authorized Id", connectionPeerMock.getAuthorizedId(), null);
+
+                    String certRole = TestUtils.buildCertRole(authConfig.getAuthConfig())[0];
+                    Assert.assertEquals("Certificate roles must be equals", certRole, connectionPeerMock.getAuthorizedId().getName());
+                }
+            }
         } catch (Exception e) {
-            Assert.assertTrue("No exception was expected, " +
-                    authConfig.toString() + ", but " + e.getClass().getName() + " has been thrown",
-                this.isExpectedException);
+            Assert.assertTrue("No exception was expected" +
+                   ", but " + e.getClass().getName() + " has been thrown\n" +
+                    authConfig.toString(),
+                this.isExpectedException.shouldThrow());
         }
     }
 
