@@ -1,9 +1,7 @@
 package org.apache.bookkeeper.tls.mocks;
 
-import static org.mockito.ArgumentMatchers.any;
-
+import static org.mockito.ArgumentMatchers.*;
 import org.apache.bookkeeper.auth.AuthCallbacks;
-import org.apache.bookkeeper.auth.BookKeeperPrincipal;
 import org.apache.bookkeeper.client.BKException;
 import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
 import org.mockito.Mockito;
@@ -32,11 +30,12 @@ public class CallBackMock implements MockBehaviour{
     public CallBackMock mock() throws MockException {
         switch (instance) {
             case VALID:
-                // Do nothing in particular -> Not necessary for unit test
+                captureAuthCode();
                 break;
             case INVALID:
                 // An exception is thrown if the code given is OK
                 Mockito.doThrow(new RuntimeException()).when(cbMock).operationComplete(BKException.Code.OK, null);
+                captureAuthCodeInvalid();
                 break;
             case NULL:
                 cbMock = null;
@@ -46,6 +45,11 @@ public class CallBackMock implements MockBehaviour{
 
         }
 
+        return this;
+    }
+
+
+    private void captureAuthCode() {
         Mockito.doAnswer(invocation -> {
             // Access the arguments passed to the method
             int authCode = invocation.getArgument(0);
@@ -53,9 +57,18 @@ public class CallBackMock implements MockBehaviour{
 
             return null;
         }).when(cbMock).operationComplete(any(int.class), any());
-
-        return this;
     }
+
+    private void captureAuthCodeInvalid() {
+        Mockito.doAnswer(invocation -> {
+            // Access the arguments passed to the method
+            int authCode = invocation.getArgument(0);
+            this.authCode = authCode;
+
+            return null;
+        }).when(cbMock).operationComplete(BKException.Code.UnauthorizedAccessException, null);
+    }
+
 
     public AuthCallbacks.GenericCallback<Void> getCbMock() {
         return cbMock;

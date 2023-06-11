@@ -24,10 +24,9 @@ public class ConnectionPeerMock implements MockBehaviour{
         this.instance = instance;
     }
 
-    /// The connection peer *INVALID* instance is mocked through the incorrect certificate roles
+    /// The connection peer *INVALID* instance is mocked through invalid certificate roles
     /// associated to a secure connection.
 
-    /// By definition a secure connection *MUST* have valid certification roles.
     @Override
     public ConnectionPeerMock mock() throws MockException {
 
@@ -46,15 +45,6 @@ public class ConnectionPeerMock implements MockBehaviour{
             mockValidConnectionSocket();
             // This changes the behaviour between *VALID* and *INVALID* instances
             Mockito.when(connectionPeerMock.getProtocolPrincipals()).thenReturn(certificatesMock.getMockCertificates());
-
-            Mockito.doAnswer(invocation -> {
-                // Access the arguments passed to the method
-                BookKeeperPrincipal bookKeeperInputPrincipal = invocation.getArgument(0);
-
-                Mockito.when(connectionPeerMock.getAuthorizedId()).thenReturn(bookKeeperInputPrincipal);
-
-                return null;
-            }).when(connectionPeerMock).setAuthorizedId(any(BookKeeperPrincipal.class));
         }
 
         return this;

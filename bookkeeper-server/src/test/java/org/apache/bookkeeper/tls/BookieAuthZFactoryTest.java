@@ -17,11 +17,12 @@
  */
 package org.apache.bookkeeper.tls;
 
-import org.apache.bookkeeper.auth.AuthCallbacks;
 import org.apache.bookkeeper.auth.BookieAuthProvider;
+import org.apache.bookkeeper.client.BKException;
 import org.apache.bookkeeper.common.util.ReflectionUtils;
 import org.apache.bookkeeper.conf.ServerConfiguration;
 import org.apache.bookkeeper.proto.BookieConnectionPeer;
+import org.apache.bookkeeper.tls.mocks.CallBackMock;
 import org.apache.bookkeeper.tls.mocks.MockException;
 import org.apache.bookkeeper.tls.mocks.builders.CallbackMockBuilder;
 import org.apache.bookkeeper.tls.mocks.builders.ConnectionPeerMockBuilder;
@@ -47,7 +48,7 @@ public class BookieAuthZFactoryTest {
     AuthZFactoryConfig authConfig;
     private ServerConfiguration conf;
     private BookieConnectionPeer connectionPeerMock;
-    private AuthCallbacks.GenericCallback<Void> completeCb;
+    private CallBackMock callBackMock;
     private TestUtils.ExceptionExpected isExpectedException;
 
     @InjectMocks
@@ -82,10 +83,9 @@ public class BookieAuthZFactoryTest {
         CallbackMockBuilder.getInstance()
             .setup(authCallbackType);
 
-        this.completeCb = CallbackMockBuilder.getInstance()
+        this.callBackMock = CallbackMockBuilder.getInstance()
             .build()
-            .mock()
-            .getCbMock();
+            .mock();
 
         // 4. Set weather an exception is expected
         this.isExpectedException = isExpectedException;
@@ -104,28 +104,21 @@ public class BookieAuthZFactoryTest {
 
     @Test
     public void testProviderInit() {
-        System.out.println(authConfig.toString());
 
         try {
             factory.init(conf);
             Assert.assertFalse("An exception was expected because of wrong input configuration.\n" +
                 authConfig.toString(), this.isExpectedException.configException());
 
-            BookieAuthProvider provider = factory.newProvider(connectionPeerMock, completeCb);
+            BookieAuthProvider provider = factory.newProvider(connectionPeerMock, callBackMock.getCbMock());
             provider.onProtocolUpgrade();
             Assert.assertFalse("An exception was expected due to a null \n" +
                 authConfig.toString(), this.isExpectedException.providerException());
 
-            if (authConfig.shouldAuthenticate()) {
-                Assert.assertNotEquals("The peer connection must have an authorized Id\n" +
-                    authConfig.toString(), connectionPeerMock.getAuthorizedId(), null);
-
-                String certRole = TestUtils.getRoles(authConfig.getAuthConfig())[0];
-                Assert.assertEquals("Certificate roles must be equals", certRole, connectionPeerMock.getAuthorizedId().getName());
-            } else {
-                Assert.assertEquals("The peer connection must NOT be authorized\n" +
-                    authConfig.toString(), connectionPeerMock.getAuthorizedId(), null);
-            }
+            Assert.assertEquals("The authentication had an unexpected behaviour",
+                authConfig.shouldAuthenticate() ? BKException.Code.OK : BKException.Code.UnauthorizedAccessException,
+                callBackMock.getAuthCode()
+            );
 
         } catch (Exception e) {
             Assert.assertTrue("No exception was expected" +
