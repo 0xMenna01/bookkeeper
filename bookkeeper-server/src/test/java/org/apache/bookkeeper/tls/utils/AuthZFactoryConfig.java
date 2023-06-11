@@ -32,6 +32,10 @@ public class AuthZFactoryConfig {
             callback.equals(GenericInstance.VALID);
     }
 
+    public boolean isValidInputConfig() {
+        return !authConfig.equals(ConfigType.NULL) && !authConfig.equals(ConfigType.INVALID);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

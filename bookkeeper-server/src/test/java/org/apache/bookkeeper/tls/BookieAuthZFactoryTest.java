@@ -35,13 +35,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.InjectMocks;
-
 import java.util.Collection;
 
 /**
  * Unit Tests for BookieAuthZFactory.
  */
-
 @RunWith(Parameterized.class)
 public class BookieAuthZFactoryTest {
 
@@ -101,7 +99,6 @@ public class BookieAuthZFactoryTest {
         return new ServerConfiguration().setAuthorizedRoles(roles);
     }
 
-
     @Test
     public void testProviderInit() {
 
@@ -126,7 +123,5 @@ public class BookieAuthZFactoryTest {
                     authConfig.toString(),
                 this.isExpectedException.shouldThrow());
         }
-
     }
-
 }
