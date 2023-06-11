@@ -45,6 +45,16 @@ public class ConnectionPeerMock implements MockBehaviour{
             mockValidConnectionSocket();
             // This changes the behaviour between *VALID* and *INVALID* instances
             Mockito.when(connectionPeerMock.getProtocolPrincipals()).thenReturn(certificatesMock.getMockCertificates());
+
+            Mockito.doAnswer(invocation -> {
+                // Access the arguments passed to the method
+                BookKeeperPrincipal bookKeeperInputPrincipal = invocation.getArgument(0);
+
+                Mockito.when(connectionPeerMock.getAuthorizedId()).thenReturn(bookKeeperInputPrincipal);
+
+                return null;
+            }).when(connectionPeerMock).setAuthorizedId(any(BookKeeperPrincipal.class));
+
         }
 
         return this;

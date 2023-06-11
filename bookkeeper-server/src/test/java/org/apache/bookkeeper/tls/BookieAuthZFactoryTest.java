@@ -117,6 +117,14 @@ public class BookieAuthZFactoryTest {
                 callBackMock.getAuthCode()
             );
 
+            if (authConfig.shouldAuthenticate()) {
+                Assert.assertNotEquals("The peer connection must have an authorized Id\n" +
+                    authConfig.toString(), connectionPeerMock.getAuthorizedId(), null);
+
+                String certRole = TestUtils.getRoles(authConfig.getAuthConfig())[0];
+                Assert.assertEquals("Certificate roles must be equals", certRole, connectionPeerMock.getAuthorizedId().getName());
+            }
+
         } catch (Exception e) {
             Assert.assertTrue("No exception was expected" +
                    ", but " + e.getClass().getName() + " has been thrown\n" +
