@@ -45,7 +45,7 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class BookieAuthZFactoryTest {
 
-    AuthZFactoryConfig authConfig;
+    private AuthZFactoryConfig authConfig;
     private ServerConfiguration conf;
     private BookieConnectionPeer connectionPeerMock;
     private CallBackMock callBackMock;
@@ -112,7 +112,7 @@ public class BookieAuthZFactoryTest {
 
             BookieAuthProvider provider = factory.newProvider(connectionPeerMock, callBackMock.getCbMock());
             provider.onProtocolUpgrade();
-            Assert.assertFalse("An exception was expected due to a null \n" +
+            Assert.assertFalse("An exception was expected due to a null reference \n" +
                 authConfig.toString(), this.isExpectedException.providerException());
 
             Assert.assertEquals("The authentication had an unexpected behaviour",
