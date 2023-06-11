@@ -26,6 +26,12 @@ public class AuthZFactoryConfig {
         return callback;
     }
 
+    public boolean shouldAuthenticate() {
+        return authConfig.equals(ConfigType.VALID_SINGLE_ROLE) &&
+            bookieConnectionPeer.equals(GenericInstance.VALID) &&
+            callback.equals(GenericInstance.VALID);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

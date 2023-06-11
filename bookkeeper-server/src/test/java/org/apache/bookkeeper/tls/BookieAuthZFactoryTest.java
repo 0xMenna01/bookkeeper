@@ -22,8 +22,6 @@ import org.apache.bookkeeper.auth.BookieAuthProvider;
 import org.apache.bookkeeper.common.util.ReflectionUtils;
 import org.apache.bookkeeper.conf.ServerConfiguration;
 import org.apache.bookkeeper.proto.BookieConnectionPeer;
-import org.apache.bookkeeper.tls.mocks.CallBackMock;
-import org.apache.bookkeeper.tls.mocks.ConnectionPeerMock;
 import org.apache.bookkeeper.tls.mocks.MockException;
 import org.apache.bookkeeper.tls.mocks.builders.CallbackMockBuilder;
 import org.apache.bookkeeper.tls.mocks.builders.ConnectionPeerMockBuilder;
@@ -31,13 +29,11 @@ import org.apache.bookkeeper.tls.utils.AuthZFactoryConfig;
 import org.apache.bookkeeper.tls.utils.enums.ConfigType;
 import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
-import org.apache.bookkeeper.util.CertUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 
 import java.util.Collection;
 
@@ -108,6 +104,8 @@ public class BookieAuthZFactoryTest {
 
     @Test
     public void testProviderInit() {
+        System.out.println(authConfig.toString());
+
         try {
             factory.init(conf);
             Assert.assertFalse("An exception was expected because of wrong input configuration.\n" +
@@ -118,20 +116,24 @@ public class BookieAuthZFactoryTest {
             Assert.assertFalse("An exception was expected due to a null \n" +
                 authConfig.toString(), this.isExpectedException.providerException());
 
-            if (!connectionPeerMock.getProtocolPrincipals().isEmpty()){
-                if (authConfig.getAuthConfig().equals(ConfigType.VALID_SINGLE_ROLE)){
-                    Assert.assertNotEquals("The peer connection must have an authorized Id", connectionPeerMock.getAuthorizedId(), null);
+            if (authConfig.shouldAuthenticate()) {
+                Assert.assertNotEquals("The peer connection must have an authorized Id\n" +
+                    authConfig.toString(), connectionPeerMock.getAuthorizedId(), null);
 
-                    String certRole = TestUtils.buildCertRole(authConfig.getAuthConfig())[0];
-                    Assert.assertEquals("Certificate roles must be equals", certRole, connectionPeerMock.getAuthorizedId().getName());
-                }
+                String certRole = TestUtils.getRoles(authConfig.getAuthConfig())[0];
+                Assert.assertEquals("Certificate roles must be equals", certRole, connectionPeerMock.getAuthorizedId().getName());
+            } else {
+                Assert.assertEquals("The peer connection must NOT be authorized\n" +
+                    authConfig.toString(), connectionPeerMock.getAuthorizedId(), null);
             }
+
         } catch (Exception e) {
             Assert.assertTrue("No exception was expected" +
                    ", but " + e.getClass().getName() + " has been thrown\n" +
                     authConfig.toString(),
                 this.isExpectedException.shouldThrow());
         }
+
     }
 
 }

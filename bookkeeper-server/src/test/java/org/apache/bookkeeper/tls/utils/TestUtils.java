@@ -1,5 +1,6 @@
 package org.apache.bookkeeper.tls.utils;
 
+import org.apache.bookkeeper.tls.mocks.MockException;
 import org.apache.bookkeeper.tls.utils.enums.ConfigType;
 import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
 
@@ -9,6 +10,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class TestUtils {
+
+
+    /// Used to build certificate roles
+    private static final String ROLE_NAME = "CN=Test Name";
+    private static final String ORGANIZATION_NAME = " O=Test Organization";
+    private static final String ROLE_SEPARATOR = ",";
 
     public static class ExceptionExpected {
         private boolean isExceptionConfig;
@@ -39,8 +46,6 @@ public class TestUtils {
         for (ConfigType configType : ConfigType.values()) {
             for (GenericInstance connectionPeerInstance : GenericInstance.values()) {
                 for (GenericInstance authCallbackInstance : GenericInstance.values()) {
-                    if (authCallbackInstance.equals(GenericInstance.INVALID))
-                        continue;
                     ExceptionExpected shouldThrowException = shouldThrowException(configType, connectionPeerInstance, authCallbackInstance);
                     Object[] parameterSet = { configType, connectionPeerInstance, authCallbackInstance, shouldThrowException };
                     parameters.add(parameterSet);
@@ -52,7 +57,7 @@ public class TestUtils {
     }
 
     private static ExceptionExpected shouldThrowException(ConfigType configType, GenericInstance bookieConnectionInstance, GenericInstance authCallbackInstance) {
-        List<ConfigType> exceptionConfig = List.of(new ConfigType[]{ConfigType.INVALID, ConfigType.NULL, ConfigType.EMPTY});
+        List<ConfigType> exceptionConfig = List.of(new ConfigType[]{ConfigType.NULL, ConfigType.INVALID});
         boolean isConfigException = exceptionConfig.contains(configType);
         boolean isProviderException = ( bookieConnectionInstance.equals(GenericInstance.NULL) ||
             authCallbackInstance.equals(GenericInstance.NULL));
@@ -60,18 +65,15 @@ public class TestUtils {
         return new ExceptionExpected(isConfigException, isProviderException);
     }
 
-    public static List<GenericInstance> buildDefaultInstances() {
-        return List.of(GenericInstance.values());
-    }
 
-    public static String[] buildCertRole(ConfigType authConfig) {
+    public static String[] getRoles(ConfigType authConfig) {
         if (authConfig.equals(ConfigType.NULL)) {
             return null;
         }
 
         String[] certRoles;
-        if (authConfig.getRoles().contains(",")) {
-            certRoles = authConfig.getRoles().split(",");
+        if (authConfig.getRoles().contains(ROLE_SEPARATOR)) {
+            certRoles = authConfig.getRoles().split(ROLE_SEPARATOR);
         } else {
             certRoles = new String[]{authConfig.getRoles()};
         }
@@ -79,5 +81,27 @@ public class TestUtils {
         return certRoles;
     }
 
+    public static String buildCertRole(String[] roles) {
+
+        if (roles == null) {
+            return null;
+        }
+
+        if (roles.length == 1) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(ROLE_NAME);
+            sb.append(ROLE_SEPARATOR);
+            sb.append(" OU=0:");
+            sb.append(roles[0]);
+
+            sb.append(ROLE_SEPARATOR);
+            sb.append(ORGANIZATION_NAME);
+
+            return sb.toString();
+        }
+
+        throw new IllegalStateException("This method only supports 1 role");
+
+    }
 
 }

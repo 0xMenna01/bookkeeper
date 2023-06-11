@@ -27,10 +27,10 @@ public class CertificatesBuilder extends GenericMockBuilder<CertificatesMock> {
 
         switch (this.instanceType) {
             case VALID:
-                certRole = TestUtils.buildCertRole(ConfigType.VALID_SINGLE_ROLE);
+                certRole = TestUtils.getRoles(ConfigType.VALID_SINGLE_ROLE);
                 break;
             case INVALID:
-                certRole = TestUtils.buildCertRole(ConfigType.INVALID);
+                certRole = TestUtils.getRoles(ConfigType.INVALID);
                 break;
             case NULL:
                 break;

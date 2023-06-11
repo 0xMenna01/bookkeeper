@@ -1,20 +1,18 @@
 package org.apache.bookkeeper.tls.mocks;
-import org.apache.bookkeeper.util.CertUtils;
+
+import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.mockito.Mockito;
-
-import java.io.IOException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-
 import javax.security.auth.x500.X500Principal;
 
 public class CertificatesMock implements MockBehaviour {
 
-
     CertMeta certMeta;
-    Collection<Object> mockCertificates = Mockito.mock(Collection.class);
     X509Certificate mockX509Certificate = Mockito.mock(X509Certificate.class);
+    Collection<Object> mockCertificates = null;
 
 
     public CertificatesMock(CertMeta certMeta) {
@@ -29,10 +27,9 @@ public class CertificatesMock implements MockBehaviour {
                 mockValidCertificates();
                 break;
             case INVALID:
-                Mockito.when(mockCertificates.isEmpty()).thenReturn(true);
+                mockInvalidCertificates();
                 break;
             case NULL:
-                this.mockCertificates = null;
                 this.mockX509Certificate = null;
                 break;
 
@@ -44,20 +41,27 @@ public class CertificatesMock implements MockBehaviour {
     }
 
     private void mockValidCertificates() {
-        Mockito.when(mockCertificates.isEmpty()).thenReturn(false);
-        Mockito.when(mockCertificates.iterator())
-            .thenReturn(Collections.singleton((Object) mockX509Certificate).iterator());
+        setCertificates();
 
-        X500Principal mockX500Principal = new X500Principal(certMeta.getCertRole()[0]);
+        String certRole = TestUtils.buildCertRole(certMeta.getCertRole());
+
+        X500Principal mockX500Principal = new X500Principal(certRole);
         Mockito.when(mockX509Certificate.getSubjectX500Principal())
             .thenReturn(mockX500Principal);
+    }
+
+    private void setCertificates() {
+        this.mockCertificates= Arrays.asList(mockX509Certificate);
+    }
+
+    /// An *INVALID* collection of certificates will have mockX509Certificate without a X500Principal
+    /// The call to mockX509Certificate.getSubjectX500Principal() must throw an exception
+    private void mockInvalidCertificates() {
+        setCertificates();
     }
 
     public Collection<Object> getMockCertificates() {
         return mockCertificates;
     }
 
-    public X509Certificate getMockX509Certificate() {
-        return mockX509Certificate;
-    }
 }

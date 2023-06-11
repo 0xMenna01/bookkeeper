@@ -2,10 +2,9 @@ package org.apache.bookkeeper.tls.utils.enums;
 
 
 public enum ConfigType {
-    VALID_SINGLE_ROLE("CN=DummyRole"),
-    VALID_MULTIPLE_ROLES("CN=Role1, CN=Role2"),
-    EMPTY(""),
-    INVALID(","),
+    VALID_SINGLE_ROLE("DummyRole"),
+    VALID_MULTIPLE_ROLES("Role1, Role2"),
+    INVALID(""),
     NULL(null);
 
     private String roles;
@@ -17,5 +16,6 @@ public enum ConfigType {
     public String getRoles() {
         return roles;
     }
+
 
 }

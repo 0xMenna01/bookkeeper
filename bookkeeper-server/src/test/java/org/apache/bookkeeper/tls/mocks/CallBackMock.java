@@ -1,6 +1,9 @@
 package org.apache.bookkeeper.tls.mocks;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import org.apache.bookkeeper.auth.AuthCallbacks;
+import org.apache.bookkeeper.auth.BookKeeperPrincipal;
 import org.apache.bookkeeper.client.BKException;
 import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
 import org.mockito.Mockito;
@@ -18,6 +21,8 @@ public class CallBackMock implements MockBehaviour{
    private GenericInstance instance;
 
    private AuthCallbacks.GenericCallback<Void> cbMock = Mockito.mock(AuthCallbacks.GenericCallback.class);
+
+   private Integer authCode = null;
 
     public CallBackMock(GenericInstance instance) {
         this.instance = instance;
@@ -41,10 +46,22 @@ public class CallBackMock implements MockBehaviour{
 
         }
 
+        Mockito.doAnswer(invocation -> {
+            // Access the arguments passed to the method
+            int authCode = invocation.getArgument(0);
+            this.authCode = authCode;
+
+            return null;
+        }).when(cbMock).operationComplete(any(int.class), any());
+
         return this;
     }
 
     public AuthCallbacks.GenericCallback<Void> getCbMock() {
         return cbMock;
+    }
+
+    public int getAuthCode() {
+        return authCode;
     }
 }
