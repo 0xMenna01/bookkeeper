@@ -1,7 +1,8 @@
 package org.apache.bookkeeper.tls.mocks.builders;
 
 import org.apache.bookkeeper.tls.mocks.ConnectionPeerMock;
-import org.apache.bookkeeper.tls.mocks.MockException;
+import org.apache.bookkeeper.utils.mocks.MockException;
+import org.apache.bookkeeper.utils.mocks.GenericMockBuilder;
 
 public class ConnectionPeerMockBuilder extends GenericMockBuilder<ConnectionPeerMock> {
 

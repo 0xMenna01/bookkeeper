@@ -1,4 +1,4 @@
-package org.apache.bookkeeper.tls.utils.enums;
+package org.apache.bookkeeper.utils;
 
 public enum GenericInstance {
     VALID,

@@ -1,8 +1,6 @@
-package org.apache.bookkeeper.tls.mocks.builders;
+package org.apache.bookkeeper.utils.mocks;
 
-import org.apache.bookkeeper.tls.mocks.MockBehaviour;
-import org.apache.bookkeeper.tls.mocks.MockException;
-import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
+import org.apache.bookkeeper.utils.GenericInstance;
 
 public abstract class GenericMockBuilder<T extends MockBehaviour> {
 

@@ -5,14 +5,16 @@ import static org.mockito.ArgumentMatchers.any;
 import org.apache.bookkeeper.auth.BookKeeperPrincipal;
 import org.apache.bookkeeper.proto.BookieConnectionPeer;
 import org.apache.bookkeeper.tls.mocks.builders.CertificatesBuilder;
-import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
+import org.apache.bookkeeper.utils.GenericInstance;
+import org.apache.bookkeeper.utils.mocks.MockException;
+import org.apache.bookkeeper.utils.mocks.MockBehaviour;
 import org.mockito.Mockito;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
-public class ConnectionPeerMock implements MockBehaviour{
+public class ConnectionPeerMock implements MockBehaviour {
     private GenericInstance instance;
     BookieConnectionPeer connectionPeerMock = Mockito.mock(BookieConnectionPeer.class);
 

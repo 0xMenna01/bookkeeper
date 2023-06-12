@@ -1,7 +1,6 @@
 package org.apache.bookkeeper.tls.utils;
 
-import org.apache.bookkeeper.tls.utils.enums.ConfigType;
-import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
+import org.apache.bookkeeper.utils.GenericInstance;
 
 public class AuthZFactoryConfig {
     private ConfigType authConfig;

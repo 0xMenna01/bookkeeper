@@ -2,9 +2,10 @@ package org.apache.bookkeeper.tls.mocks.builders;
 
 import org.apache.bookkeeper.tls.mocks.CertMeta;
 import org.apache.bookkeeper.tls.mocks.CertificatesMock;
-import org.apache.bookkeeper.tls.mocks.MockException;
+import org.apache.bookkeeper.utils.mocks.MockException;
 import org.apache.bookkeeper.tls.utils.TestUtils;
-import org.apache.bookkeeper.tls.utils.enums.ConfigType;
+import org.apache.bookkeeper.tls.utils.ConfigType;
+import org.apache.bookkeeper.utils.mocks.GenericMockBuilder;
 
 public class CertificatesBuilder extends GenericMockBuilder<CertificatesMock> {
 

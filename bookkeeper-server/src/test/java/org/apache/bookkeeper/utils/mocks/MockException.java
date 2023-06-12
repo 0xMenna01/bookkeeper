@@ -1,4 +1,4 @@
-package org.apache.bookkeeper.tls.mocks;
+package org.apache.bookkeeper.utils.mocks;
 
 public class MockException extends Exception{
 

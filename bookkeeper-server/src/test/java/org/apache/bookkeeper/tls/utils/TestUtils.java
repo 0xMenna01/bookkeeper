@@ -1,11 +1,8 @@
 package org.apache.bookkeeper.tls.utils;
 
-import org.apache.bookkeeper.tls.mocks.MockException;
-import org.apache.bookkeeper.tls.utils.enums.ConfigType;
-import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
+import org.apache.bookkeeper.utils.GenericInstance;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 

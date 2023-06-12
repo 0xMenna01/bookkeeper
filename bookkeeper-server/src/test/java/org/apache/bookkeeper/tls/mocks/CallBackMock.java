@@ -3,7 +3,9 @@ package org.apache.bookkeeper.tls.mocks;
 import static org.mockito.ArgumentMatchers.*;
 import org.apache.bookkeeper.auth.AuthCallbacks;
 import org.apache.bookkeeper.client.BKException;
-import org.apache.bookkeeper.tls.utils.enums.GenericInstance;
+import org.apache.bookkeeper.utils.GenericInstance;
+import org.apache.bookkeeper.utils.mocks.MockException;
+import org.apache.bookkeeper.utils.mocks.MockBehaviour;
 import org.mockito.Mockito;
 
 // This mock is used for a *UNIT TEST*  of the class BookieAuthZFactory
@@ -14,7 +16,7 @@ import org.mockito.Mockito;
 // has set the authentication successfully on the handler, that will be tested
 // during INTEGRATION TESTING
 
-public class CallBackMock implements MockBehaviour{
+public class CallBackMock implements MockBehaviour {
 
    private GenericInstance instance;
 
