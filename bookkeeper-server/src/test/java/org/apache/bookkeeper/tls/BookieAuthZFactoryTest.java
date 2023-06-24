@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.InjectMocks;
+
 import java.util.Collection;
 
 /**
@@ -48,8 +49,6 @@ public class BookieAuthZFactoryTest {
     private BookieConnectionPeer connectionPeerMock;
     private CallBackMock callBackMock;
     private TestUtils.ExceptionExpected isExpectedException;
-
-    @InjectMocks
     private BookieAuthProvider.Factory factory;
 
 
@@ -127,7 +126,7 @@ public class BookieAuthZFactoryTest {
 
         } catch (Exception e) {
             Assert.assertTrue("No exception was expected" +
-                   ", but " + e.getClass().getName() + " has been thrown\n" +
+                    ", but " + e.getClass().getName() + " has been thrown\n" +
                     authConfig.toString(),
                 this.isExpectedException.shouldThrow());
         }

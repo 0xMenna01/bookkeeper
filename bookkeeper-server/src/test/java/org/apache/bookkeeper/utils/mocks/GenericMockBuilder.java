@@ -10,5 +10,5 @@ public abstract class GenericMockBuilder<T extends MockBehaviour> {
         this.instanceType = instanceType;
     }
 
-    abstract T build() throws MockException;
+    protected abstract T build() throws MockException;
 }
