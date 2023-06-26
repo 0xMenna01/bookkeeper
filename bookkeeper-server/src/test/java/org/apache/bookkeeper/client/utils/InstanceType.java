@@ -1,6 +1,6 @@
 package org.apache.bookkeeper.client.utils;
 
-public enum MapType {
+public enum InstanceType {
 
     VALID,
     INVALID,
