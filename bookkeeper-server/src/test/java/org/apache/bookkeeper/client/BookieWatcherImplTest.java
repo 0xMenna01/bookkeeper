@@ -50,7 +50,7 @@ public class BookieWatcherImplTest {
     private Map<String, byte[]> customMetadata;
     private InstanceType mapType;
 
-    //Expected exception for first iteration
+    //Expected exception for metadata constraint
     private ExceptionExpected exceptionConstraintAndMeta;
 
     // Second iteration only
@@ -68,7 +68,22 @@ public class BookieWatcherImplTest {
                                  InstanceType existingBookies,
                                  TestClientUtils.BookieIdxType bookieIdx,
                                  InstanceType excludeBookies) throws Exception {
+
+        this.ensembleSize = ensembleSize;
+        this.writeQuorumSize = writeQuorumSize;
+        this.ackQuorumSize = ackQuorumSize;
+        this.mapType = mapType;
+        this.customMetadata = TestClientUtils.buildMap(mapType);
+
+        this.exceptionConstraintAndMeta = TestClientUtils.buildMetaException(ackQuorumSize, writeQuorumSize, ensembleSize, mapType);
+
+        //Only for second iteration
+        this.instances = new InstancesReplaceBookie(existingBookies, bookieIdx, excludeBookies);
+        this.exceptionSecondIter = TestClientUtils.isReplaceBookiesException(existingBookies, bookieIdx, excludeBookies);
+
         setUpPolicy();
+        setUpBookies();
+        setUpIndex();
 
         this.bookieWatcher = new BookieWatcherImpl(
             conf,
@@ -77,27 +92,15 @@ public class BookieWatcherImplTest {
             BookieSocketAddress.LEGACY_BOOKIEID_RESOLVER,
             NullStatsLogger.INSTANCE
         );
-
-        // Parameters for both first and second iteration
-        this.ensembleSize = ensembleSize;
-        this.writeQuorumSize = writeQuorumSize;
-        this.ackQuorumSize = ackQuorumSize;
-        this.mapType = mapType;
-        this.customMetadata = TestClientUtils.buildMap(mapType);
-        // Only for first iteration
-        this.exceptionConstraintAndMeta = TestClientUtils.buildMetaException(ackQuorumSize, writeQuorumSize, ensembleSize, mapType);
-
-        //Only for second iteration
-        this.instances = new InstancesReplaceBookie(existingBookies, bookieIdx, excludeBookies);
-        setUpBookies();
-        setUpIndex();
-
-        this.exceptionSecondIter = TestClientUtils.isReplaceBookiesException(existingBookies, bookieIdx, excludeBookies);
     }
 
     // Set up an instance of type DefaultEnsemblePlacementPolicy
     private void setUpPolicy() {
         StaticDNSResolver.reset();
+
+        if (!exceptionSecondIter) {
+            conf.setDiskWeightBasedPlacementEnabled(true);
+        }
 
         conf.setProperty(REPP_DNS_RESOLVER_CLASS, StaticDNSResolver.class.getName());
 
@@ -219,7 +222,7 @@ public class BookieWatcherImplTest {
                 exceptionConstraintAndMeta.shouldThrow());
         }
     }
-    
+
     @Test
     public void testReplaceBookie() {
 
