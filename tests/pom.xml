@@ -15,6 +15,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <rootpom.basedir>${basedir}/..</rootpom.basedir>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -152,6 +153,11 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>${project.parent.groupId}.tests</groupId>
+            <artifactId>stream-storage-tests-common</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>bookkeeper-tools-framework</artifactId>
             <version>${project.parent.version}</version>
@@ -178,7 +184,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-
+                <version>0.8.10</version>
                 <executions>
                     <execution>
                         <id>report</id>

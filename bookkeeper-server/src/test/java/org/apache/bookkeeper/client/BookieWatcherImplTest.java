@@ -219,8 +219,7 @@ public class BookieWatcherImplTest {
                 exceptionConstraintAndMeta.shouldThrow());
         }
     }
-
-
+    
     @Test
     public void testReplaceBookie() {
 
