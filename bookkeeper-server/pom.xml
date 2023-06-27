@@ -390,6 +390,7 @@
                             <targetTests>
                                 <!-- param>org.apache.bookkeeper.tls.BookieAuthZFactoryTest</param -->
                                 <param>org.apache.bookkeeper.client.BookieWatcherImplTest</param>
+                                <param>org.apache.bookkeeper.client.BookieWatcherImplForMutationTest</param>
                             </targetTests>
                             <avoidCallsTo>
                                 <avoidCallsTo>org.slf4j</avoidCallsTo>

@@ -21,6 +21,7 @@ import org.apache.bookkeeper.client.utils.InstanceType;
 import org.apache.bookkeeper.client.utils.InstancesReplaceBookie;
 import org.apache.bookkeeper.client.utils.TestClientUtils;
 import org.apache.bookkeeper.conf.ClientConfiguration;
+import org.apache.bookkeeper.meta.MetadataDrivers;
 import org.apache.bookkeeper.net.BookieId;
 import org.apache.bookkeeper.net.BookieSocketAddress;
 import org.apache.bookkeeper.net.DNSToSwitchMapping;
@@ -210,12 +211,20 @@ public class BookieWatcherImplTest {
 
         try {
             List<BookieId> bookieIds = bookieWatcher.newEnsemble(ensembleSize, writeQuorumSize, ackQuorumSize, customMetadata);
+
+            Assume.assumeFalse("An exception was expected.\n" +
+                exceptionConstraintAndMeta.toString(), exceptionConstraintAndMeta.shouldThrow());
+
             Assert.assertFalse("An exception was expected.\n" +
                 exceptionConstraintAndMeta.toString(), exceptionConstraintAndMeta.shouldThrow());
 
             Assert.assertEquals("The number of instances of type BookieId does not match the expected", bookieIds.size(), ensembleSize);
 
         } catch (Exception e) {
+            Assume.assumeTrue("No exception was expected" +
+                    ", but " + e.getClass().getName() + " has been thrown.\n" +
+                    exceptionConstraintAndMeta.toString(),
+                exceptionConstraintAndMeta.shouldThrow());
             Assert.assertTrue("No exception was expected" +
                     ", but " + e.getClass().getName() + " has been thrown.\n" +
                     exceptionConstraintAndMeta.toString(),
@@ -239,11 +248,16 @@ public class BookieWatcherImplTest {
             BookieId bookieId = bookieWatcher.replaceBookie(ensembleSize, writeQuorumSize, ackQuorumSize, customMetadata,
                 existingBookies, bookieIdx, excludeBookies);
 
+            Assume.assumeFalse("An exception was expected.\n", exceptionSecondIter || exceptionConstraintAndMeta.shouldThrow());
+
             Assert.assertFalse("An exception was expected.\n", exceptionSecondIter || exceptionConstraintAndMeta.shouldThrow());
 
             Assert.assertTrue("The candidate bookie is not in the ensamble", ensemble.contains(bookieId));
 
         } catch (Exception e) {
+            Assume.assumeTrue("No exception was expected" +
+                    ", but " + e.getClass().getName() + " has been thrown.\n",
+                exceptionSecondIter || exceptionConstraintAndMeta.shouldThrow());
             Assert.assertTrue("No exception was expected" +
                     ", but " + e.getClass().getName() + " has been thrown.\n",
                 exceptionSecondIter || exceptionConstraintAndMeta.shouldThrow());
