@@ -3,6 +3,7 @@ package org.apache.bookkeeper.tls.utils;
 import org.apache.bookkeeper.utils.GenericInstance;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class TestUtils {
             return isExceptionProvider;
         }
 
-        public boolean shouldThrow(){
+        public boolean shouldThrow() {
             return (isExceptionConfig || isExceptionProvider);
         }
     }
@@ -44,7 +45,7 @@ public class TestUtils {
             for (GenericInstance connectionPeerInstance : GenericInstance.values()) {
                 for (GenericInstance authCallbackInstance : GenericInstance.values()) {
                     ExceptionExpected shouldThrowException = shouldThrowException(configType, connectionPeerInstance, authCallbackInstance);
-                    Object[] parameterSet = { configType, connectionPeerInstance, authCallbackInstance, shouldThrowException };
+                    Object[] parameterSet = {configType, connectionPeerInstance, authCallbackInstance, shouldThrowException};
                     parameters.add(parameterSet);
                 }
             }
@@ -54,9 +55,9 @@ public class TestUtils {
     }
 
     private static ExceptionExpected shouldThrowException(ConfigType configType, GenericInstance bookieConnectionInstance, GenericInstance authCallbackInstance) {
-        List<ConfigType> exceptionConfig = List.of(new ConfigType[]{ConfigType.NULL, ConfigType.INVALID});
+        List<ConfigType> exceptionConfig = Arrays.asList(ConfigType.NULL, ConfigType.INVALID);
         boolean isConfigException = exceptionConfig.contains(configType);
-        boolean isProviderException = ( bookieConnectionInstance.equals(GenericInstance.NULL) ||
+        boolean isProviderException = (bookieConnectionInstance.equals(GenericInstance.NULL) ||
             authCallbackInstance.equals(GenericInstance.NULL));
 
         return new ExceptionExpected(isConfigException, isProviderException);

@@ -129,6 +129,7 @@ public class DefaultEnsemblePlacementPolicy implements EnsemblePlacementPolicy {
                                                    BookieId bookieToReplace, Set<BookieId> excludeBookies)
         throws BKNotEnoughBookiesException {
         excludeBookies.addAll(currentEnsemble);
+
         List<BookieId> addresses = newEnsemble(1, 1, 1, customMetadata, excludeBookies).getResult();
 
         BookieId candidateAddr = addresses.get(0);

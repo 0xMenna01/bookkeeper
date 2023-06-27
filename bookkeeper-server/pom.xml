@@ -200,6 +200,7 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.bookkeeper.stats</groupId>
             <artifactId>prometheus-metrics-provider</artifactId>
@@ -220,6 +221,11 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -264,9 +270,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                  <useSystemClassLoader>false</useSystemClassLoader>
-                </configuration>
+                <version>${maven-surefire-plugin.version}</version>
+                <!-- configuration>
+                  <trimStackTrace>false</trimStackTrace>
+                  <properties>
+                    <property>
+                      <name>listener</name>
+                      <value>org.apache.bookkeeper.common.testing.util.TimedOutTestsListener</value>
+                    </property>
+                  </properties>
+                </configuration -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -294,15 +307,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
     <profiles>
@@ -361,6 +365,54 @@
             </build>
         </profile>
 
+        <!-- PIT profile -->
+        <profile>
+            <id>PitMutationTesting</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <withHistory>true</withHistory>
+                <pitest.version>1.14.0</pitest.version>
+                <pitest.history.file>${project.build.directory}/pitest.history</pitest.history.file>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>${pitest.version}</version>
+                        <configuration>
+                            <targetClasses>
+                                <!-- param>org.apache.bookkeeper.tls.BookieAuthZFactory</param -->
+                                <param>org.apache.bookkeeper.client.BookieWatcherImpl</param>
+                            </targetClasses>
+                            <targetTests>
+                                <!-- param>org.apache.bookkeeper.tls.BookieAuthZFactoryTest</param -->
+                                <param>org.apache.bookkeeper.client.BookieWatcherImplTest</param>
+                                <param>org.apache.bookkeeper.client.BookieWatcherImplForMutationTest</param>
+                            </targetTests>
+                            <avoidCallsTo>
+                                <avoidCallsTo>org.slf4j</avoidCallsTo>
+                            </avoidCallsTo>
+                            <historyInputFile>${pitest.history.file}</historyInputFile>
+                            <historyOutputFile>${pitest.history.file}</historyOutputFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>PIT Report Generation</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>mutationCoverage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- BaDua profile -->
         <profile>
             <id>BaDuaCoverage</id>
             <activation>
@@ -368,15 +420,10 @@
             </activation>
             <properties>
                 <ba-dua.version>0.6.0</ba-dua.version>
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <maven.compiler.source>${java.specification.version}</maven.compiler.source>
-                <maven.compiler.target>${java.specification.version}</maven.compiler.target>
                 <argLine>-javaagent:target/dependency/ba-dua-agent-rt-${ba-dua.version}-all.jar
-                    -Doutput.file=target/badua.ser
+                    -Doutput.file=${project.build.directory}/badua.ser
                 </argLine>
-                <maven.deploy.skip>true</maven.deploy.skip>
             </properties>
-            <!-- Needed for generate the report -->
             <dependencies>
                 <dependency>
                     <groupId>br.usp.each.saeg</groupId>
@@ -386,8 +433,6 @@
             </dependencies>
             <build>
                 <plugins>
-
-                    <!-- Copy ba-dua-agent-rt from .m2 directory to target/dependency -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
@@ -410,8 +455,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
-                    <!-- Generate report in xml format -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -441,5 +484,6 @@
                 </plugins>
             </build>
         </profile>
+
     </profiles>
 </project>
