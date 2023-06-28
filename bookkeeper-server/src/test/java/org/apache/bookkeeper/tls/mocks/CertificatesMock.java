@@ -4,9 +4,11 @@ import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.apache.bookkeeper.utils.mocks.MockException;
 import org.apache.bookkeeper.utils.mocks.MockBehaviour;
 import org.mockito.Mockito;
+
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
+
 import javax.security.auth.x500.X500Principal;
 
 public class CertificatesMock implements MockBehaviour {
@@ -52,7 +54,7 @@ public class CertificatesMock implements MockBehaviour {
     }
 
     private void setCertificates() {
-        this.mockCertificates= Arrays.asList(mockX509Certificate);
+        this.mockCertificates = Arrays.asList(mockX509Certificate);
     }
 
     /// An *INVALID* collection of certificates will have mockX509Certificate without a X500Principal

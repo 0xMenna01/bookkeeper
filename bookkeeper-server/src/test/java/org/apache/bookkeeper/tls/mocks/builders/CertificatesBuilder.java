@@ -9,12 +9,13 @@ import org.apache.bookkeeper.utils.mocks.GenericMockBuilder;
 
 public class CertificatesBuilder extends GenericMockBuilder<CertificatesMock> {
 
-   private static CertificatesBuilder instance = null;
+    private static CertificatesBuilder instance = null;
 
-    private CertificatesBuilder(){}
+    private CertificatesBuilder() {
+    }
 
     public static CertificatesBuilder getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new CertificatesBuilder();
         }
         return instance;
@@ -31,7 +32,7 @@ public class CertificatesBuilder extends GenericMockBuilder<CertificatesMock> {
                 certRole = TestUtils.getRoles(ConfigType.VALID_SINGLE_ROLE);
                 break;
             case INVALID:
-                certRole = TestUtils.getRoles(ConfigType.INVALID);
+                certRole = TestUtils.getRoles(ConfigType.EMPTY);
                 break;
             case NULL:
                 break;

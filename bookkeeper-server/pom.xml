@@ -388,7 +388,7 @@
                                 <param>org.apache.bookkeeper.client.BookieWatcherImpl</param>
                             </targetClasses>
                             <targetTests>
-                                <!-- param>org.apache.bookkeeper.tls.BookieAuthZFactoryTest</param -->
+                                <!-- param>org.apache.bookkeeper.tls.BookieAuthZFactoryNewProviderTest</param -->
                                 <param>org.apache.bookkeeper.client.BookieWatcherImplTest</param>
                                 <param>org.apache.bookkeeper.client.BookieWatcherImplForMutationTest</param>
                             </targetTests>
