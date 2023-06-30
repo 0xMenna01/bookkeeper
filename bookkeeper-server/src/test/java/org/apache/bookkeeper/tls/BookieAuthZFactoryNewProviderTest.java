@@ -31,11 +31,9 @@ import org.apache.bookkeeper.tls.utils.ConfigType;
 import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.apache.bookkeeper.utils.GenericInstance;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -54,7 +52,7 @@ public class BookieAuthZFactoryNewProviderTest {
     private BookieAuthProvider.Factory factory;
 
 
-    public BookieAuthZFactoryNewProviderTest(GenericInstance connectionPeerType, GenericInstance authCallbackType, boolean isExpectedException) throws MockException {
+    public BookieAuthZFactoryNewProviderTest(TestUtils.ConnectionPeerType connectionPeerType, GenericInstance authCallbackType, boolean isExpectedException) throws MockException {
 
         this.authConfig = new AuthZFactoryConfig(connectionPeerType, authCallbackType);
 
@@ -103,7 +101,7 @@ public class BookieAuthZFactoryNewProviderTest {
         return new ServerConfiguration().setAuthorizedRoles(ConfigType.VALID_SINGLE_ROLE.getRoles());
     }
 
-    @Ignore
+
     @Test
     public void testProviderInit() {
 

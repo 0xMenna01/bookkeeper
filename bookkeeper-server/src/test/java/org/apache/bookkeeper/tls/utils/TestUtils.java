@@ -41,7 +41,7 @@ public class TestUtils {
     public static Collection<Object[]> buildAuthConfigParameters() {
         List<Object[]> parameters = new ArrayList<>();
 
-        for (GenericInstance connectionPeerInstance : GenericInstance.values()) {
+        for (ConnectionPeerType connectionPeerInstance : ConnectionPeerType.values()) {
             for (GenericInstance authCallbackInstance : GenericInstance.values()) {
                 Boolean shouldThrowException = shouldThrowException(connectionPeerInstance, authCallbackInstance);
                 Object[] parameterSet = {connectionPeerInstance, authCallbackInstance, shouldThrowException};
@@ -53,11 +53,18 @@ public class TestUtils {
         return parameters;
     }
 
-    private static boolean shouldThrowException(GenericInstance bookieConnectionInstance, GenericInstance authCallbackInstance) {
+    public enum ConnectionPeerType {
+        VALID,
+        INVALID,
+        NULL,
+        INSECURE,
+        WRONG_ROLES,
+    }
 
-        boolean isProviderException = (bookieConnectionInstance.equals(GenericInstance.NULL) ||
+    private static boolean shouldThrowException(ConnectionPeerType bookieConnectionInstance, GenericInstance authCallbackInstance) {
+
+        boolean isProviderException = (bookieConnectionInstance.equals(ConnectionPeerType.NULL) ||
             authCallbackInstance.equals(GenericInstance.NULL));
-
         return isProviderException;
     }
 
@@ -82,9 +89,8 @@ public class TestUtils {
         if (roles == null) {
             return null;
         }
-
-
-        if (roles.length == 1) {
+        
+        if (roles.length >= 1) {
             StringBuilder sb = new StringBuilder();
             sb.append(ROLE_NAME);
             sb.append(ROLE_SEPARATOR);
@@ -97,7 +103,7 @@ public class TestUtils {
             return sb.toString();
         }
 
-        throw new IllegalStateException("This method only supports 1 role");
+        throw new IllegalStateException("Roles are not set properly");
 
     }
 

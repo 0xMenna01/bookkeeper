@@ -1,5 +1,6 @@
 package org.apache.bookkeeper.tls.mocks;
 
+import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.apache.bookkeeper.utils.GenericInstance;
 import org.apache.bookkeeper.utils.mocks.MockException;
 
@@ -7,26 +8,27 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CertMeta {
-    private GenericInstance instance;
+    private TestUtils.ConnectionPeerType instance;
     private String[] certRole;
 
-    public CertMeta() {}
+    public CertMeta() {
+    }
 
-    public void setMeta(GenericInstance instance, String[] certRole) throws MockException {
+    public void setMeta(TestUtils.ConnectionPeerType instance, String[] certRole) throws MockException {
         switch (instance) {
             case NULL:
                 if (certRole == null)
                     break;
             case VALID:
                 List<String> validRoles = listRoles(instance, certRole);
-                if (isValid(validRoles))
-                    break;
-            case INVALID:
+                if (isValid(validRoles)) break;
+            case WRONG_ROLES:
+                List<String> wrongRoles = listRoles(instance, certRole);
+                if (isValid(wrongRoles)) break;
+            default:
                 List<String> invalidRoles = listRoles(instance, certRole);
                 if (!isValid(invalidRoles))
                     break;
-
-            default:
                 error();
         }
 
@@ -38,7 +40,7 @@ public class CertMeta {
         return !(roleList.isEmpty() || roleList.contains("") || roleList.contains(","));
     }
 
-    private List<String> listRoles(GenericInstance instance, String[] certRole) throws MockException {
+    private List<String> listRoles(TestUtils.ConnectionPeerType instance, String[] certRole) throws MockException {
         if (certRole == null) throw new MockException("Roles must NOT be null");
 
         return Arrays.asList(certRole);
@@ -48,7 +50,7 @@ public class CertMeta {
         throw new MockException("The provided mock is not valid");
     }
 
-    public GenericInstance getInstance() {
+    public TestUtils.ConnectionPeerType getInstance() {
         return instance;
     }
 

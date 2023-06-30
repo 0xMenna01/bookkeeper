@@ -3,15 +3,15 @@ package org.apache.bookkeeper.tls.utils;
 import org.apache.bookkeeper.utils.GenericInstance;
 
 public class AuthZFactoryConfig {
-    private GenericInstance bookieConnectionPeer;
+    private TestUtils.ConnectionPeerType bookieConnectionPeer;
     private GenericInstance callback;
 
-    public AuthZFactoryConfig(GenericInstance bookieConnectionPeer, GenericInstance callback) {
+    public AuthZFactoryConfig(TestUtils.ConnectionPeerType bookieConnectionPeer, GenericInstance callback) {
         this.bookieConnectionPeer = bookieConnectionPeer;
         this.callback = callback;
     }
 
-    public GenericInstance getBookieConnectionPeer() {
+    public TestUtils.ConnectionPeerType getBookieConnectionPeer() {
         return bookieConnectionPeer;
     }
 
@@ -20,7 +20,7 @@ public class AuthZFactoryConfig {
     }
 
     public boolean shouldAuthenticate() {
-        return bookieConnectionPeer.equals(GenericInstance.VALID) &&
+        return bookieConnectionPeer.equals(TestUtils.ConnectionPeerType.VALID) &&
             callback.equals(GenericInstance.VALID);
     }
 

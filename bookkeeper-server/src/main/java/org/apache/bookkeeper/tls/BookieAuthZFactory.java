@@ -116,6 +116,7 @@ public class BookieAuthZFactory implements BookieAuthProvider.Factory {
                             log.error("AuthZ failed: Certs are missing or not X509 type; host: {}",
                                 addr.getRemoteAddr());
                         }
+
                         completeCallback.operationComplete(BKException.Code.UnauthorizedAccessException, null);
                     }
                 } catch (Exception e) {
