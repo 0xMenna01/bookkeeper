@@ -18,10 +18,13 @@
 package org.apache.bookkeeper.tls;
 
 import com.google.common.base.Strings;
+
 import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.bookkeeper.auth.AuthCallbacks;
 import org.apache.bookkeeper.auth.AuthToken;
 import org.apache.bookkeeper.auth.BookKeeperPrincipal;
@@ -52,14 +55,14 @@ public class BookieAuthZFactory implements BookieAuthProvider.Factory {
 
         if (allowedRoles == null || allowedRoles.length == 0) {
             throw new RuntimeException("Configuration option \'bookieAuthProviderFactoryClass\' is set to"
-                    + " \'BookieAuthZFactory\' but no roles set for configuration field \'authorizedRoles\'.");
+                + " \'BookieAuthZFactory\' but no roles set for configuration field \'authorizedRoles\'.");
         }
 
         // If authorization is enabled and there are no roles, exit
         for (String allowedRole : allowedRoles) {
             if (Strings.isNullOrEmpty(allowedRole)) {
                 throw new RuntimeException("Configuration option \'bookieAuthProviderFactoryClass\' is set to"
-                        + " \'BookieAuthZFactory\' but no roles set for configuration field \'authorizedRoles\'.");
+                    + " \'BookieAuthZFactory\' but no roles set for configuration field \'authorizedRoles\'.");
             }
         }
     }
@@ -78,13 +81,13 @@ public class BookieAuthZFactory implements BookieAuthProvider.Factory {
                     boolean secureBookieSideChannel = addr.isSecure();
                     Collection<Object> certificates = addr.getProtocolPrincipals();
                     if (secureBookieSideChannel && !certificates.isEmpty()
-                            && certificates.iterator().next() instanceof X509Certificate) {
+                        && certificates.iterator().next() instanceof X509Certificate) {
                         X509Certificate tempCert = (X509Certificate) certificates.iterator().next();
                         String[] certRole = CertUtils.getRolesFromOU(tempCert);
                         if (certRole == null || certRole.length == 0) {
                             log.error("AuthZ failed: No cert role in OU field of certificate. Must have a role from "
-                                            + "allowedRoles list {} host: {}",
-                                    allowedRoles, addr.getRemoteAddr());
+                                    + "allowedRoles list {} host: {}",
+                                allowedRoles, addr.getRemoteAddr());
                             completeCallback.operationComplete(BKException.Code.UnauthorizedAccessException, null);
                             return;
                         }
@@ -100,19 +103,20 @@ public class BookieAuthZFactory implements BookieAuthProvider.Factory {
                             completeCallback.operationComplete(BKException.Code.OK, null);
                         } else {
                             log.error("AuthZ failed: Cert role {} doesn't match allowedRoles list {}; host: {}",
-                                    certRole, allowedRoles, addr.getRemoteAddr());
+                                certRole, allowedRoles, addr.getRemoteAddr());
                             completeCallback.operationComplete(BKException.Code.UnauthorizedAccessException, null);
                         }
                     } else {
                         if (!secureBookieSideChannel) {
                             log.error("AuthZ failed: Bookie side channel is not secured; host: {}",
-                                    addr.getRemoteAddr());
+                                addr.getRemoteAddr());
                         } else if (certificates.isEmpty()) {
                             log.error("AuthZ failed: Certificate missing; host: {}", addr.getRemoteAddr());
                         } else {
                             log.error("AuthZ failed: Certs are missing or not X509 type; host: {}",
-                                    addr.getRemoteAddr());
+                                addr.getRemoteAddr());
                         }
+
                         completeCallback.operationComplete(BKException.Code.UnauthorizedAccessException, null);
                     }
                 } catch (Exception e) {

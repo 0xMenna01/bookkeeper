@@ -384,13 +384,15 @@
                         <version>${pitest.version}</version>
                         <configuration>
                             <targetClasses>
-                                <!-- param>org.apache.bookkeeper.tls.BookieAuthZFactory</param -->
-                                <param>org.apache.bookkeeper.client.BookieWatcherImpl</param>
+                                <param>org.apache.bookkeeper.tls.BookieAuthZFactory</param>
+                                <param>org.apache.bookkeeper.tls.BookieAuthZFactory$1</param>
+                                <!-- param>org.apache.bookkeeper.client.BookieWatcherImpl</param -->
                             </targetClasses>
                             <targetTests>
-                                <!-- param>org.apache.bookkeeper.tls.BookieAuthZFactoryTest</param -->
-                                <param>org.apache.bookkeeper.client.BookieWatcherImplTest</param>
-                                <param>org.apache.bookkeeper.client.BookieWatcherImplForMutationTest</param>
+                                <param>org.apache.bookkeeper.tls.BookieAuthZFactoryInitTest</param>
+                                <param>org.apache.bookkeeper.tls.BookieAuthZFactoryNewProviderTest</param>
+                                <!-- param>org.apache.bookkeeper.client.BookieWatcherImplTest</param -->
+                                <!-- param>org.apache.bookkeeper.client.BookieWatcherImplForMutationTest</param -->
                             </targetTests>
                             <avoidCallsTo>
                                 <avoidCallsTo>org.slf4j</avoidCallsTo>

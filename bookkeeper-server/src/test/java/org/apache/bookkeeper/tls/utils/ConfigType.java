@@ -3,8 +3,13 @@ package org.apache.bookkeeper.tls.utils;
 
 public enum ConfigType {
     VALID_SINGLE_ROLE("DummyRole"),
+
     VALID_MULTIPLE_ROLES("Role1, Role2"),
-    INVALID(""),
+
+    EMPTY(""),
+
+    NULL_STRING(null),
+
     NULL(null);
 
     private String roles;

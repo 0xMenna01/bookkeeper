@@ -1,17 +1,19 @@
 package org.apache.bookkeeper.tls.mocks.builders;
 
 import org.apache.bookkeeper.tls.mocks.CallBackMock;
+import org.apache.bookkeeper.utils.GenericInstance;
 import org.apache.bookkeeper.utils.mocks.MockException;
 import org.apache.bookkeeper.utils.mocks.GenericMockBuilder;
 
-public class CallbackMockBuilder extends GenericMockBuilder<CallBackMock> {
+public class CallbackMockBuilder extends GenericMockBuilder<CallBackMock, GenericInstance> {
 
     private static CallbackMockBuilder instance = null;
 
-    private CallbackMockBuilder(){}
+    private CallbackMockBuilder() {
+    }
 
     public static CallbackMockBuilder getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new CallbackMockBuilder();
         }
         return instance;

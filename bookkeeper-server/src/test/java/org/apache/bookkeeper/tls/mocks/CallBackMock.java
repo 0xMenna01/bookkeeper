@@ -1,6 +1,7 @@
 package org.apache.bookkeeper.tls.mocks;
 
 import static org.mockito.ArgumentMatchers.*;
+
 import org.apache.bookkeeper.auth.AuthCallbacks;
 import org.apache.bookkeeper.client.BKException;
 import org.apache.bookkeeper.utils.GenericInstance;
@@ -18,11 +19,11 @@ import org.mockito.Mockito;
 
 public class CallBackMock implements MockBehaviour {
 
-   private GenericInstance instance;
+    private GenericInstance instance;
 
-   private AuthCallbacks.GenericCallback<Void> cbMock = Mockito.mock(AuthCallbacks.GenericCallback.class);
+    private AuthCallbacks.GenericCallback<Void> cbMock = Mockito.mock(AuthCallbacks.GenericCallback.class);
 
-   private Integer authCode = null;
+    private Integer authCode = null;
 
     public CallBackMock(GenericInstance instance) {
         this.instance = instance;
@@ -36,7 +37,7 @@ public class CallBackMock implements MockBehaviour {
                 break;
             case INVALID:
                 // An exception is thrown if the code given is OK
-                Mockito.doThrow(new RuntimeException()).when(cbMock).operationComplete(BKException.Code.OK, null);
+                Mockito.doThrow(new RuntimeException("invalid callback")).when(cbMock).operationComplete(BKException.Code.OK, null);
                 captureAuthCodeInvalid();
                 break;
             case NULL:
@@ -49,7 +50,6 @@ public class CallBackMock implements MockBehaviour {
 
         return this;
     }
-
 
     private void captureAuthCode() {
         Mockito.doAnswer(invocation -> {

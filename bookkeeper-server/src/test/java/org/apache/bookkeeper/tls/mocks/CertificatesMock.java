@@ -4,9 +4,13 @@ import org.apache.bookkeeper.tls.utils.TestUtils;
 import org.apache.bookkeeper.utils.mocks.MockException;
 import org.apache.bookkeeper.utils.mocks.MockBehaviour;
 import org.mockito.Mockito;
+
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+
 import javax.security.auth.x500.X500Principal;
 
 public class CertificatesMock implements MockBehaviour {
@@ -27,19 +31,19 @@ public class CertificatesMock implements MockBehaviour {
             case VALID:
                 mockValidCertificates();
                 break;
-            case INVALID:
-                mockInvalidCertificates();
+            case WRONG_ROLES:
+                mockValidCertificates();
                 break;
             case NULL:
                 this.mockX509Certificate = null;
                 break;
-
             default:
-                throw new MockException("Invalid Certification instance");
+                mockInvalidCertificates();
         }
 
         return this;
     }
+
 
     private void mockValidCertificates() {
         setCertificates();
@@ -51,8 +55,9 @@ public class CertificatesMock implements MockBehaviour {
             .thenReturn(mockX500Principal);
     }
 
+    
     private void setCertificates() {
-        this.mockCertificates= Arrays.asList(mockX509Certificate);
+        this.mockCertificates = Arrays.asList(mockX509Certificate);
     }
 
     /// An *INVALID* collection of certificates will have mockX509Certificate without a X500Principal
