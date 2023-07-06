@@ -6,13 +6,8 @@ import static org.apache.bookkeeper.feature.SettableFeatureProvider.DISABLE_ALL;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import org.apache.bookkeeper.client.mocks.RegistrationClientMock;
-import org.apache.bookkeeper.client.utils.ExceptionExpected;
 import org.apache.bookkeeper.client.utils.InstanceType;
-import org.apache.bookkeeper.client.utils.InstancesReplaceBookie;
-import org.apache.bookkeeper.client.utils.TestClientUtils;
 import org.apache.bookkeeper.conf.ClientConfiguration;
-import org.apache.bookkeeper.discover.RegistrationClient;
-import org.apache.bookkeeper.meta.MetadataDrivers;
 import org.apache.bookkeeper.net.BookieId;
 import org.apache.bookkeeper.net.BookieSocketAddress;
 import org.apache.bookkeeper.net.DNSToSwitchMapping;
@@ -20,14 +15,9 @@ import org.apache.bookkeeper.stats.NullStatsLogger;
 import org.apache.bookkeeper.util.StaticDNSResolver;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
